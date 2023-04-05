@@ -1,4 +1,5 @@
 import { useRef, useEffect } from "react";
+import Webcam from "react-webcam";
 
 const Detection = (props) => {
     const webcamRef = useRef(null);
@@ -7,10 +8,10 @@ const Detection = (props) => {
     var model;
 
     const startInfer = () => {
-        /*inferRunning = true;
+        inferRunning = true;
         window.roboflow
             .auth({
-                publishable_key: "vIkUHcco5ivmpVzbIkvX"
+                publishable_key: "rf_b1UNMnVxFyOhHs7KJibn0FHQHA72"
             })
             .load({
                 model: props.modelName,
@@ -23,7 +24,6 @@ const Detection = (props) => {
                     if (inferRunning) detect(model);
                 }, 10);
             });
-            */
     };
 
     useEffect(startInfer, []);
@@ -140,6 +140,11 @@ const Detection = (props) => {
 
     return (
         <>
+            <Webcam
+                ref={webcamRef}
+                muted={true}
+                className="absolute mx-auto left-0 right-0 text-center z-10"
+            />
             <canvas ref={canvasRef} className="absolute mx-auto left-0 right-0 text-center z-20" />
         </>
     );

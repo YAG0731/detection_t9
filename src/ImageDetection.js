@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 
-const API_ENDPOINT = 'https://detect.roboflow.com/wildfire_smoke_detection-498gm/1';
+const API_ENDPOINT = 'https://detect.roboflow.com/?model=wildfire_smoke_detection-498gm&version=1&api_key=vIkUHcco5ivmpVzbIkvX';
 const API_KEY = 'vIkUHcco5ivmpVzbIkvX';
+
 
 function ImageDetection() {
   useEffect(() => {
