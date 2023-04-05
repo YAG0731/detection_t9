@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ImageDetection from './ImageDetection';
-import RoboflowDetector from './roboflowDetection';
+import RoboflowDetector from './detectionComponents/roboflowDetection';
 import axios from 'axios';
 
 class App extends Component {
@@ -75,7 +75,7 @@ class App extends Component {
         ctx.lineTo(canvas.width, i);
       }
       ctx.stroke();
-      
+
 
       canvas.toBlob(async (blob) => {
         const file = new File([blob], 'image.jpg', { type: blob.type });
@@ -120,14 +120,17 @@ class App extends Component {
       <div>
         <div>
           <div style={{ position: 'absolute', marginTop: '72px', zIndex: '-100' }}>
-
+            <text style={{ position: 'relative', fontSize: '30px', fontWeight: 'bold' , padding:'20px'}}
+            >
+              Wildfire Detection
+            </text>
             <div style={{ margin: '10px 0 0 20px', width: '75vw' }}>
 
-              <select style={{ padding: '16px' }} onChange={(e) => { this.setState({ area: e.target.value }); setTimeout(() => { this.getFile() }, 10) }}>
+              <select class="my-select" onChange={(e) => { this.setState({ area: e.target.value }); setTimeout(() => { this.getFile() }, 10) }}>
                 <option value='North California'>North California</option>
                 <option value='South California'>South California</option>
               </select>
-              <select style={{ padding: '16px' }} onChange={(e) => { this.setState({ imageColor: e.target.value }); setTimeout(() => { this.getFile() }, 10) }}>
+              <select class="my-select" onChange={(e) => { this.setState({ imageColor: e.target.value }); setTimeout(() => { this.getFile() }, 10) }}>
                 <option value='True Color Composite'>True Color Composite</option>
                 <option value='False Color Composite'>False Color Composite</option>
               </select>
@@ -146,11 +149,11 @@ class App extends Component {
                 this.state.gotInputImage === false ?
                   <div>Loading...</div>
                   :
-                  <img src={this.state.inputFileUrl} width='100%' />
+                  <img src={this.state.inputFileUrl} width='70%' />
               }
 
               <div>
-                
+
 
               </div>
             </div>

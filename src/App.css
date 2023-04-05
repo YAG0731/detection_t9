@@ -36,3 +36,44 @@
     transform: rotate(360deg);
   }
 }
+
+.select {
+  box-sizing: border-box;
+  padding: 10px;
+  font-size: 16px;
+  line-height: 1.3;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  width: 200px;
+  margin: 0;
+  vertical-align: middle;
+}
+
+
+.my-select {
+  width: 200px; /* set the width of the select element */
+  height: 50px; /* set the height of the select element */
+  padding: 10px; /* add padding to the select element */
+  border: 5px solid #ccc; /* add a border to the select element */
+  border-radius: 5px; /* add border-radius to the select element */
+  font-size: 16px; /* set the font size of the select element */
+  margin: 20px; /* add margin to the select element */
+}
+
+.button {
+  height: 40px; /* set a fixed height for all buttons */
+  width: auto; /* allow the width to adjust to the content */
+  padding: 10px 20px 10px 20px; /* add some padding for better readability */
+  margin-right: 10px; /* add some space between buttons */
+  border: none; /* remove the default border */
+  border-radius: 5px; /* add rounded corners */
+  background-color: #ac3131; /* set a background color */
+  color: #333; /* set a text color */
+  font-size: 16px; /* set a font size */
+  cursor: pointer; /* add a cursor on hover */
+}
+
+button:hover {
+  background-color: #ccc; /* change the background color on hover */
+  color: #fff; /* change the text color on hover */
+}
