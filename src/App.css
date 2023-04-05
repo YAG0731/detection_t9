@@ -77,3 +77,26 @@ button:hover {
   background-color: #ccc; /* change the background color on hover */
   color: #fff; /* change the text color on hover */
 }
+
+.link {
+  color: #2a55b3;
+  text-decoration: none;
+  margin: 10px ;
+  padding: 10px;
+}
+
+.link:hover {
+  text-decoration: underline;
+  text-decoration-style: solid;
+}
+
+.nav-links {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  margin: 15px;
+}
+
+ul {
+  list-style-type: none;
+}

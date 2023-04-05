@@ -29,6 +29,54 @@ function RoboflowDetector({ imgurl }) {
         setImgDimensions({ width: event.target.width, height: event.target.height });
     };
 
+    const firesmokeseverity = (detections) => {
+        if (detections.length === 0) {
+            return [];
+        }
+        const severityMap = [];
+        const gridWidth = Math.floor(imgDimensions.width / 20);
+        const gridHeight = Math.floor(imgDimensions.height / 20);
+        const subGridWidth = Math.floor(gridWidth / 3);
+        const subGridHeight = Math.floor(gridHeight / 3);
+
+        for (let i = 0; i < 20; i++) {
+            for (let j = 0; j < 20; j++) {
+                const subGrids = [];
+                let fireCount = 0;
+                let smokeCount = 0;
+
+                for (let k = 0; k < 3; k++) {
+                    for (let l = 0; l < 3; l++) {
+                        const x = i * gridWidth + k * subGridWidth;
+                        const y = j * gridHeight + l * subGridHeight;
+                        const subGridDetections = detections.filter(d => d.x >= x && d.x <= x + subGridWidth && d.y >= y && d.y <= y + subGridHeight);
+
+                        subGrids.push(subGridDetections);
+
+                        const smokeDetections = subGridDetections.filter(d => d.class === 'smoke');
+                        smokeCount += smokeDetections.length;
+
+                        const fireDetections = subGridDetections.filter(d => d.class === 'fire');
+                        fireCount += fireDetections.length;
+                    }
+                }
+
+                const severity = Math.max(fireCount, smokeCount) / 9;
+                severityMap.push({
+                    x: i * gridWidth,
+                    y: j * gridHeight,
+                    width: gridWidth,
+                    height: gridHeight,
+                    severity
+                });
+
+                console.log(`Grid (${i}, ${j}): fireCount=${fireCount}, smokeCount=${smokeCount}, severity=${severity}`);
+            }
+        }
+
+        return severityMap;
+    };
+
     const img = <img src={imgurl} alt="Out Image" style={{ width: '50%', height: '50%', marginRight: '16px' }} onLoad={handleImgLoad} />;
 
     return (
@@ -37,58 +85,22 @@ function RoboflowDetector({ imgurl }) {
                 height: '40px',
                 padding: '10px',
                 margin: '20px',
-                color: '#333', 
+                color: '#333',
                 fontSize: '16px',
-            }} onClick={handleDetection}>Detect Wildfire and Smoke</button>
-            {results && results.length > 0 ? (
-                <div style={{ position: 'relative' }}>
-                    {img}
-                    <svg
-                        style={{
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            width: '100%',
-                            height: '100%',
-                            pointerEvents: 'none'
-                        }}
-                    >
-                        {results.map((result, index) => (
-                            result.x &&
-                            <React.Fragment key={index}>
-                                <rect
-                                    x={result.x.toString() * 0.25 * (imgDimensions.width / result.width.toString())}
-                                    y={result.y.toString() * 0.25 * (imgDimensions.height / result.height.toString())}
-                                    width={result.width.toString() * 0.25 * (imgDimensions.width / result.width.toString())}
-                                    height={result.height.toString() * 0.25 * (imgDimensions.height / result.height.toString())}
-                                    style={{
-                                        stroke: 'red',
-                                        strokeWidth: 1,
-                                        fill: 'none'
-                                    }}
-                                />
-                                <text
-                                    x={result.x.toString() * 0.25 * (imgDimensions.width / result.width.toString())}
-                                    y={result.y.toString() * 0.25 * (imgDimensions.height / result.height.toString()) - 5}
-                                    style={{
-                                        fill: 'green',
-                                        stroke: 'red',
-                                        strokeWidth: 0.5,
-                                        fontSize: '20px'
-                                    }}
-                                >
-                                    {result.class}
-                                    {result.confidence && ` (${(result.confidence * 100).toFixed(2)}%)`}
-                                </text>
-                            </React.Fragment>
-                        ))}
-                    </svg>
-                </div>
-            ) : (
-                <div>No thing detected</div>
-            )}
-        </div >
+            }} onClick={handleDetection
+            }>Detect Wildfire and Smoke</button>
+            {img}
+            {results && firesmokeseverity(results).map((severity, index) => (
+                <div key={index} style={{
+                    position: 'relative',
+                    left: severity.x,
+                    top: severity.y,
+                    width: severity.width,
+                    height: severity.height,
+                    backgroundColor: severity.severity > 0 ? severity.severity > 0.5 ? 'red' : 'yellow' : 'transparent'
+                }}></div>
+            ))}
+        </div>
     );
-}
-
+}    
 export default RoboflowDetector;
