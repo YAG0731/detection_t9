@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { loadModules } from 'esri-loader';
+import ee from '@google/earthengine';
 
 function FireRiskPrediction() {
 
@@ -55,8 +56,8 @@ function FireRiskPrediction() {
                                     name: 'MODIS Land Cover',
                                     getTileUrl: function (tile, zoom) {
                                         return [
-                                            'https://earthengine.googleapis.com/v1alpha/projects/earthengine-legacy/maps',
-                                            ${ selectedCity }_${ zoom }_${ tile.x }_${ tile.y }
+                                            'https://earthengine.googleapis.com/v1alpha/projects/earthengine-legacy/maps/',
+                                            `${selectedCity}_${zoom}_${tile.x}_${tile.y}`
                                         ].join('/');
                                     },
                                     tileSize: new window.google.maps.Size(256, 256),
