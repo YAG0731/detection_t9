@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
 import ImageCollection from './ImageCollection';
-import FireRiskPredictionPage from './FireRiskPrediction';
-import FireProgressionPage from './FireProgression';
+import FireRiskPrediction from './FireRiskPrediction';
+import FireProgression from './FireProgression';
 import './App.css';
 
 function App() {
@@ -25,8 +25,8 @@ function App() {
         </nav>
         <Routes>
           <Route path="/" element={<ImageCollection />} />
-          <Route path="/fire-risk" element={<FireRiskPredictionPage />} />
-          <Route path="/fire-progression" element={<FireProgressionPage />} />
+          <Route path="/fire-risk" element={<FireRiskPrediction />} />
+          <Route path="/fire-progression" element={<FireProgression />} />
         </Routes>
       </BrowserRouter>
     </div>
