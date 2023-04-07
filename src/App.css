@@ -100,3 +100,8 @@ button:hover {
 ul {
   list-style-type: none;
 }
+
+map_container{
+  width:600px;
+  height:600px;
+}
