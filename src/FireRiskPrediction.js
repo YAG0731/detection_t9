@@ -80,7 +80,17 @@ function FireRiskPrediction() {
     });
   }, []);
 
-  return <div ref={mapRef} style={{ height: '800px', width:'800px', float:'left' }} />;
+  return (
+    <>
+      <header>
+        <h1>Land Cover</h1>
+      </header>
+      <div
+        ref={mapRef}
+        style={{ height: '500px', width: '500px', border: '2px solid black' }}
+      ></div>
+    </>
+  );
 }
 
 export default FireRiskPrediction;
