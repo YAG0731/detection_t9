@@ -1,118 +1,86 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { loadModules } from 'esri-loader';
 
 function FireRiskPrediction() {
-    const [map, setMap] = useState(null);
-    const [searchText, setSearchText] = useState("");
+  const mapRef = useRef(null);
 
-    useEffect(() => {
-        // lazy load the required ArcGIS API for JavaScript modules and CSS
-        loadModules([
-            "esri/config",
-            "esri/Map",
-            "esri/views/MapView",
-            "esri/widgets/Search",
-            "esri/layers/MapImageLayer",
-            "esri/widgets/Popup"
-        ], { css: true })
-            .then(([esriConfig, Map, MapView, Search, MapImageLayer, Popup]) => {
-                // configure the ArcGIS API key
-                esriConfig.apiKey = "AAPK553f2d7b5ba14ddeb7d7c84b002a6af29b6u1zso-l474jVx0LXlAgHSZHwJ3pOC4EttPRQPS_soxYE7RGkiXSbFRl4m5Daj";
+  useEffect(() => {
+    // lazy load the required ArcGIS API for JavaScript modules
+    loadModules([
+      'esri/Map',
+      'esri/views/MapView',
+      'esri/layers/ImageryLayer',
+      'esri/widgets/Legend'
+    ]).then(([Map, MapView, ImageryLayer, Legend]) => {
+      // create the map
+      const map = new Map();
 
-                // create a new Map instance with the specified basemap
-                const map = new Map({
-                    basemap: "arcgis-topographic"
-                });
+      // create the imagery layer
+      const layer = new ImageryLayer({
+        url:
+          'https://ic.imagery1.arcgis.com/arcgis/rest/services/Sentinel2_10m_LandCover/ImageServer',
+        title: 'Sentinel-2 10-Meter Land Use/Land Cover',
+        opacity: 0.8
+      });
 
-                // create a new MapView instance and set the map property to the created map
-                const view = new MapView({
-                    container: "viewDiv",
-                    map: map,
-                    center: [-98.5795, 39.8283], // the initial center of the map (in this case, the center of the US)
-                    zoom: 4 // the initial zoom level of the map
-                });
+      // add the imagery layer to the map
+      map.add(layer);
 
-                // create a new Search widget instance and set the view property to the created map view
-                const searchWidget = new Search({
-                    view: view,
-                    container: "searchContainer",
-                    allPlaceholder: "Enter a city name",
-                    includeDefaultSources: false,
-                    sources: [
-                        {
-                            featureLayer: new MapImageLayer({
-                                url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/SampleWorldCities/MapServer",
-                                popupTemplate: new Popup({
-                                    title: "{CITY_NAME}, {CNTRY_NAME}",
-                                    content: "Population: {POPULATION}"
-                                })
-                            }),
-                            searchFields: ["CITY_NAME"],
-                            displayField: "CITY_NAME",
-                            exactMatch: false,
-                            outFields: ["*"],
-                            name: "City Name",
-                            placeholder: "Example: New York",
-                            maxResults: 6,
-                            maxSuggestions: 6,
-                            suggestionsEnabled: true,
-                            minSuggestCharacters: 0
-                        }
-                    ]
-                });
-
-                // add the search widget to the view
-                view.ui.add(searchWidget, {
-                    position: "top-right"
-                });
-
-                // listen for the search widget to return results and zoom to the selected location
-                searchWidget.on("select-result", function (event) {
-                    view.goTo({
-                        target: event.result.extent,
-                        zoom: 12
-                    });
-                });
-
-                // create a new MapImageLayer instance with the specified URL
-                const wildfireRisk = new MapImageLayer({
-                    url: "https://maps7.arcgisonline.com/arcgis/rest/services/USDA_USFS_2014_Wildfire_Hazard_Potential/MapServer"
-                });
-
-                map.add(wildfireRisk);
-
-                // set the map and view states
-                setMap(map);
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-    }, []);
-
-    const handleSearchTextChange = (event) => {
-        setSearchText(event.target.value);
-    };
-
-    const handleSearch = () => {
-        // check if map and search widget are initialized
-        if (map && map.loaded && searchText) {
-            // get the search widget
-            const searchWidget = map.findLayerById("search-widget");
-            // execute a search using the search text
-            searchWidget.search(searchText);
+      // create the map view
+      const view = new MapView({
+        container: mapRef.current,
+        map: map,
+        center: [-100, 40],
+        zoom: 4,
+        constraints: {
+          minZoom: 3
         }
-    };
+      });
 
-    return (
-        <div>
-            <div id="searchContainer" className="search-container"></div>
-            <div className="search-box">
-                <input type="text" value={searchText} onChange={handleSearchTextChange} placeholder="Enter a city name" />
-                <button onClick={handleSearch}>Search</button>
-            </div>
-            <div id="viewDiv" className="map-container"></div>
-        </div>
-    );
+      // add the legend to the view
+      const legend = new Legend({
+        view: view,
+        style: {
+            height: '200px',
+            width: '200px'
+          },
+        layerInfos: [
+          {
+            layer: layer,
+            title: 'Land Cover',
+            hideLayers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            defaultSymbolEnabled: false
+          }
+        ]
+      });
+      view.ui.add(legend, 'bottom-left');
+
+      // create the time slider
+      const timeSlider = document.createElement('input');
+      timeSlider.type = 'range';
+      timeSlider.min = '2017';
+      timeSlider.max = '2021';
+      timeSlider.step = '1';
+      timeSlider.value = '2021';
+      timeSlider.style.width = '200px';
+      timeSlider.style.marginTop = '10px';
+
+      // add the time slider to the view
+      view.ui.add(timeSlider, 'manual');
+
+      // update the layer's time extent based on the selected year
+      timeSlider.addEventListener('input', (event) => {
+        const selectedYear = event.target.value;
+        const timeExtent = {
+          start: new Date(`${selectedYear}-01-01`),
+          end: new Date(`${selectedYear}-12-31`)
+        };
+        layer.timeExtent = timeExtent;
+      });
+    });
+  }, []);
+
+  return <div ref={mapRef} style={{ height: '800px', width:'800px', float:'left' }} />;
 }
 
 export default FireRiskPrediction;

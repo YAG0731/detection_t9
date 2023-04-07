@@ -1,6 +1,5 @@
 import React from 'react';
-//import MapView from 'react-native-maps';
-//import Geojson from 'react-native-geojson';
+
 
 function FireProgression() {
   return (
