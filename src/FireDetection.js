@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import RoboflowDetector from './detectionComponents/roboflowDetection';
 import axios from 'axios';
 
-class ImageCollection extends Component {
+class FireDetection extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -40,7 +40,11 @@ class ImageCollection extends Component {
 
     if (this.state.area === 'North California') {
       url += '37,-125,42,-120&TIME=';
-    } else {
+    }
+    if (this.state.area === 'Kaohsiung') {
+      url += '22,120,23,121&TIME=';
+    }
+    else {
       url += '32,-122,39,-114&TIME=';
     }
     url += this.state.date;
@@ -118,16 +122,14 @@ class ImageCollection extends Component {
     return (
       <div>
         <div>
-          <div style={{ position: 'absolute', marginTop: '72px', zIndex: '-100' }}>
-            <text style={{ position: 'relative', fontSize: '30px', fontWeight: 'bold' , padding:'20px'}}
-            >
-              Wildfire Detection
-            </text>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', zIndex: '-100' }}>
+          <h1 style={{ marginBottom: '50px' }}>Wildfire and Smoke Detection</h1>
             <div style={{ margin: '10px 0 0 20px', width: '75vw' }}>
 
               <select class="my-select" onChange={(e) => { this.setState({ area: e.target.value }); setTimeout(() => { this.getFile() }, 10) }}>
                 <option value='North California'>North California</option>
                 <option value='South California'>South California</option>
+                <option value='Kaohsiung'>Kaohsiung</option>
               </select>
               <select class="my-select" onChange={(e) => { this.setState({ imageColor: e.target.value }); setTimeout(() => { this.getFile() }, 10) }}>
                 <option value='True Color Composite'>True Color Composite</option>
@@ -152,8 +154,6 @@ class ImageCollection extends Component {
               }
 
               <div>
-
-
               </div>
             </div>
           </div>
@@ -163,4 +163,4 @@ class ImageCollection extends Component {
   }
 }
 
-export default ImageCollection;
+export default FireDetection;

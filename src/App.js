@@ -1,9 +1,10 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
-import ImageCollection from './ImageCollection';
-import FireRiskPrediction from './FireRiskPrediction';
+import FireDetection from './FireDetection';
 import FireProgression from './FireProgression';
 import './App.css';
+
+import FireRiskPrediction from './FireRiskPrediction';
 
 function App() {
   return (
@@ -24,7 +25,7 @@ function App() {
           </ul>
         </nav>
         <Routes>
-          <Route path="/" element={<ImageCollection />} />
+          <Route path="/" element={<FireDetection />} />
           <Route path="/fire-risk" element={<FireRiskPrediction />} />
           <Route path="/fire-progression" element={<FireProgression />} />
         </Routes>
