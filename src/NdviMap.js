@@ -3,102 +3,82 @@ import { loadModules } from 'esri-loader';
 
 function NdviMap() {
   const mapRef = useRef(null);
-  
+
   useEffect(() => {
-    // lazy load the required ArcGIS API for JavaScript modules
+    // load the required ArcGIS API modules
     loadModules([
       'esri/Map',
       'esri/views/MapView',
       'esri/layers/ImageryLayer',
-      'esri/widgets/Legend'
-    ]).then(([Map, MapView, ImageryLayer, Legend]) => {
-      // create the map
-      const map = new Map();
+      'esri/layers/Layer',
+      'esri/layers/support/RasterFunction'
+    ], { css: true })
+      .then(([ArcGISMap, MapView, ImageryLayer, Layer, RasterFunction,Legend]) => {
+        // create a new map instance
+        const map = new ArcGISMap({
+          basemap: 'satellite'
+        });
 
-      // create the imagery layer
-      const layer = new ImageryLayer({
-        url:
-          'https://landsat2.arcgis.com/arcgis/rest/services/Landsat8_Views/ImageServer',
-          bandIds: [3, 4],
-        title: 'NDVI',
-        opacity: 1
-      });
+        // create a new map view instance
+        const view = new MapView({
+          container: mapRef.current,
+          map: map,
+          center: [120, 22], // Los Angeles coordinates
+          zoom: 7
+        });
 
-      // add the imagery layer to the map
-      map.add(layer);
+        // create a new imagery layer instance
+        const imageryLayer = new ImageryLayer({
+          url: 'https://landsat.arcgis.com/arcgis/rest/services/Landsat8_Views/ImageServer',
+          renderingRule: {
+            rasterFunction: 'NDVI Colorized',
+            variableName: 'Raster'
+          },
+          opacity: 1
+        });
 
-      // create the map view
-      const view = new MapView({
-        container: mapRef.current,
-        map: map,
-        center: [120, 22],
-        zoom: 10,
-        constraints: {
-          minZoom: 3
-        }
-      });
+        // add the imagery layer to the map
+        map.add(imageryLayer);
 
-      // add the legend to the view
-      const legend = new Legend({
-        view: view,
-        style: {
-          height: '200px',
-          width: '200px'
-        },
-        layerInfos: [
-          {
-            layer: layer,
-            title: 'NDVI Risk Prediction USA',
-            defaultSymbolEnabled: false
+        const legend = new Legend({
+          view: view,
+          style: {
+            height: '200px',
+            width: '200px'
+          },
+          layerInfos: [
+            {
+              layer: imageryLayer,
+              title: 'NDVI Risk Prediction USA',
+              defaultSymbolEnabled: false
+            }
+          ]
+        });
+        view.ui.add(legend, 'bottom-right');
+
+        return () => {
+          // cleanup logic here
+          if (view) {
+            view.destroy();
           }
-        ]
-      });
-      view.ui.add(legend, 'bottom-right');
-
-      /*
-      // create the time slider
-      const timeSlider = document.createElement('input');
-      timeSlider.type = 'range';
-      timeSlider.min = '2017';
-      timeSlider.max = '2022';
-      timeSlider.step = '1';
-      timeSlider.value = '2022';
-      timeSlider.style.width = '200px';
-
-      timeSlider.style.marginTop = '100px';
-      timeSlider.style.position = 'absolute';
-      timeSlider.style.top = '10px';
-      timeSlider.style.left = 'calc(100px - 50%)';
-
-      // add the time slider to the view
-      const header = document.getElementsByTagName('header')[0];
-      header.appendChild(timeSlider);
-
-      // update the layer's time extent based on the selected year
-      timeSlider.addEventListener('input', (event) => {
-        const selectedYear = event.target.value;
-        const timeExtent = {
-          start: new Date(`${selectedYear}-01-01`),
-          end: new Date(`${selectedYear}-12-31`)
         };
-        layer.timeExtent = timeExtent;
+      })
+      .catch((error) => {
+        console.error(error);
       });
-      */
-    });
   }, []);
 
   return (
     <div style={{ alignItems: 'right' }}>
       <header>
-        <h1>NDVI</h1>
+        <h1>Moisture Index</h1>
       </header>
       <div
         ref={mapRef}
-        style={{ height: '500px', width: '500px', border: '2px solid black', maxWidth: '500px'  }}
+        style={{ height: '500px', width: '500px', border: '2px solid black', maxWidth: '500px' }}
       ></div>
+
     </div>
-
-
   );
 }
 

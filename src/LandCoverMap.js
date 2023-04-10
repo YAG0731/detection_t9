@@ -48,22 +48,24 @@ function LandCoverMap() {
         */
 
       // add the legend to the view
-      const legend = new Legend({
-        view: view,
-        style: {
-          height: '200px',
-          width: '200px'
-        },
-        layerInfos: [
-          {
-            layer: layer,
-            title: 'Land Cover',
-            hideLayers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-            defaultSymbolEnabled: false
-          }
-        ]
-      });
-      view.ui.add(legend, 'bottom-left');
+// add the legend to the view
+const legend = new Legend({
+  view: view,
+  style: {
+    height: '200px',
+    width: '200px'
+  },
+  layerInfos: [
+    {
+      layer: layer,
+      title: 'Land Cover',
+      hideLayers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      defaultSymbolEnabled: false
+    }
+  ]
+});
+view.ui.add(legend, 'top-left');
+
 
       // create the time slider
       const timeSlider = document.createElement('input');

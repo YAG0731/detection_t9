@@ -1,11 +1,11 @@
 import React from 'react';
-
+import PythonApp from './progressionComponents/pythonapp';
 
 function FireProgression() {
   return (
-    <div>
-      <h1 style={{ marginBottom: '50px' }}>Fire Progression</h1>
-      {/* Add your Fire Progression component here */}
+    <div style={{ height:'100%' }}>
+      
+      <PythonApp/>
     </div>
   );
 }
