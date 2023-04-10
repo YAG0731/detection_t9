@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import NdviRiskMap from './NdviMap';
+import NdviMap from './NdviMap';
 import LandCoverMap from './LandCoverMap';
-import { geocodeByAddress } from 'react-places-autocomplete';
 
 function FireRiskPrediction() {
     const [city, setCity] = useState('San Jose');
@@ -30,7 +29,7 @@ function FireRiskPrediction() {
             </form>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginLeft: '10px', marginRight: '10px' }}>
                 <LandCoverMap city={city} />
-                <NdviRiskMap city={city} />
+                <NdviMap city={city} />
             </div>
         </div>
     );

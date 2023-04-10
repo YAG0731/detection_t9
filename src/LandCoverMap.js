@@ -23,19 +23,29 @@ function LandCoverMap() {
         opacity: 1
       });
 
+
       // add the imagery layer to the map
       map.add(layer);
 
-      // create the map view
       const view = new MapView({
         container: mapRef.current,
         map: map,
-        center: [-100, 40],
-        zoom: 10,
+        center: [120, 22],
+        zoom: 12,
         constraints: {
-          minZoom: 3
+          minZoom: 100
         }
       });
+
+      /*var geo = view.center;
+      geo.x = 120;
+      geo.y = 22;
+
+      view.goTo({
+        geometry:geo,
+        zoom:12
+        });
+        */
 
       // add the legend to the view
       const legend = new Legend({

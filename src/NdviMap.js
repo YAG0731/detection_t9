@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { loadModules } from 'esri-loader';
 
-function NdviRiskMap() {
+function NdviMap() {
   const mapRef = useRef(null);
   
   useEffect(() => {
@@ -19,7 +19,7 @@ function NdviRiskMap() {
       const layer = new ImageryLayer({
         url:
           'https://landsat2.arcgis.com/arcgis/rest/services/Landsat8_Views/ImageServer',
-          bandIds: [5, 4],
+          bandIds: [3, 4],
         title: 'NDVI',
         opacity: 1
       });
@@ -31,7 +31,7 @@ function NdviRiskMap() {
       const view = new MapView({
         container: mapRef.current,
         map: map,
-        center: [-100, 40],
+        center: [120, 22],
         zoom: 10,
         constraints: {
           minZoom: 3
@@ -102,4 +102,4 @@ function NdviRiskMap() {
   );
 }
 
-export default NdviRiskMap;
+export default NdviMap;

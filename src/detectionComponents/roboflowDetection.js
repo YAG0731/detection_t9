@@ -19,6 +19,7 @@ function RoboflowDetector({ imgurl }) {
         const detections = response.data['predictions'];
         setResults(detections);
         setShowImage(true);
+        console.log(detections);
         detections.forEach((detection) => console.log(detection.x));
       })
       .catch(function (error) {
