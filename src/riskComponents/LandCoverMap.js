@@ -102,7 +102,7 @@ function LandCoverMap() {
         );
       };
 
-      ReactDOM.render(<TimeSlider />, document.getElementById('slider'));
+      //ReactDOM.render(<TimeSlider />, document.getElementById('slider'));
       
       return () => {
         // cleanup logic here
