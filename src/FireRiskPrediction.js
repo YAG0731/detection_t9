@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import NdviMap from './NdviMap';
-import LandCoverMap from './LandCoverMap';
+import NdviMap from './riskComponents/NdviMap';
+import LandCoverMap from './riskComponents/LandCoverMap';
 
 function FireRiskPrediction() {
     const [city, setCity] = useState('San Jose');
@@ -27,7 +27,7 @@ function FireRiskPrediction() {
                 </label>
                 <button type="submit">Submit</button>
             </form>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginLeft: '10px', marginRight: '10px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginLeft: '8%', marginRight: '8%' }}>
                 <LandCoverMap city={city} />
                 <NdviMap city={city} />
             </div>

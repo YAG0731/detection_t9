@@ -124,7 +124,7 @@ class FireDetection extends Component {
         <div>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', zIndex: '-100' }}>
           <h1 style={{ marginBottom: '50px' }}>Wildfire and Smoke Detection</h1>
-            <div style={{ margin: '10px 0 0 20px', width: '75vw' }}>
+            <div style={{ margin: '10px 0 0 10px', width: '100vw' }}>
 
               <select class="my-select" onChange={(e) => { this.setState({ area: e.target.value }); setTimeout(() => { this.getFile() }, 10) }}>
                 <option value='North California'>North California</option>
@@ -135,10 +135,10 @@ class FireDetection extends Component {
                 <option value='True Color Composite'>True Color Composite</option>
                 <option value='False Color Composite'>False Color Composite</option>
               </select>
-              <input type='date' onChange={(e) => { this.setState({ date: e.target.value }); setTimeout(() => { this.getFile() }, 10) }} />
+              <input class='select' type='date' onChange={(e) => { this.setState({ date: e.target.value }); setTimeout(() => { this.getFile() }, 10) }} />
             </div>
             <RoboflowDetector imgurl={this.state.imgUrl} />
-            <div style={{ border: '1px solid grey', borderRadius: '10px', padding: '10px', width: '60%' }}>
+            <div style={{ border: '1px solid grey', borderRadius: '15px', padding: '5px', width: '70%' }}>
 
               <h5 style={{ fontWeight: 'bold' }}>Input Image:</h5>
               <hr />

@@ -9,7 +9,7 @@ import FireRiskPrediction from './FireRiskPrediction';
 function App() {
   return (
     <div className="App">
-      <h1>Wildfire Detection Platform</h1>
+      <h1>Intelligent Wildfire Detection and Progression Analysis Plateform</h1>
       <BrowserRouter>
         <nav>
           <ul className="nav-links">

@@ -51,13 +51,13 @@
 
 
 .my-select {
-  width: 200px; /* set the width of the select element */
+  width: 250px; /* set the width of the select element */
   height: 50px; /* set the height of the select element */
-  padding: 10px; /* add padding to the select element */
+  padding: 5px; /* add padding to the select element */
   border: 5px solid #ccc; /* add a border to the select element */
   border-radius: 5px; /* add border-radius to the select element */
   font-size: 16px; /* set the font size of the select element */
-  margin: 20px; /* add margin to the select element */
+  margin: 10px; /* add margin to the select element */
 }
 
 .button {

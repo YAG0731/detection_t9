@@ -2,68 +2,93 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 function RoboflowDetector({ imgurl }) {
-  const [results, setResults] = useState(null);
-  const [imgDimensions, setImgDimensions] = useState({ width: 0, height: 0 });
-  const [showImage, setShowImage] = useState(false);
+    const [results, setResults] = useState(null);
+    const [imgDimensions, setImgDimensions] = useState({ width: 0, height: 0 });
 
-  const handleDetection = () => {
-    axios({
-      method: 'POST',
-      url: 'https://detect.roboflow.com/wildfire_smoke_detection-498gm/5',
-      params: {
-        api_key: 'vIkUHcco5ivmpVzbIkvX',
-        image: imgurl, // Use the imgurl prop here
-      },
-    })
-      .then(function (response) {
-        const detections = response.data['predictions'];
-        setResults(detections);
-        setShowImage(true);
-        console.log(detections);
-        detections.forEach((detection) => console.log(detection.x));
-      })
-      .catch(function (error) {
-        console.log(error.message);
-      });
-  };
-
-  const handleImgLoad = (event) => {
-    setImgDimensions({ width: event.target.width, height: event.target.height });
-  };
-
-  let img = null;
-  if (showImage) {
-    if (results && results.length > 0) {
-      img = (
-        <img
-          src={imgurl}
-          alt="Out Image"
-          style={{ width: '50%', height: '50%', marginBottom: '16px' }}
-          onLoad={handleImgLoad}
-        />
-      );
-    } else {
-      img = <p>No thing detected</p>;
+    const handleDetection = () => {
+        axios({
+            method: "POST",
+            url: "https://detect.roboflow.com/wildfire_smoke_detection-498gm/5",
+            params: {
+                api_key: "vIkUHcco5ivmpVzbIkvX",
+                image: imgurl // Use the imgurl prop here
+            }
+        })
+            .then(function (response) {
+                const detections = response.data['predictions'];
+                console.log(detections)
+                setResults(detections);
+                detections.forEach(detection => console.log(detection.x))
+            })
+            .catch(function (error) {
+                console.log(error.message);
+            });
     }
-  }
 
-  return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-      <button
-        style={{
-          height: '40px',
-          padding: '10px',
-          margin: '20px',
-          color: '#333',
-          fontSize: '16px',
-        }}
-        onClick={handleDetection}
-      >
-        Detect Wildfire and Smoke
-      </button>
-      {img}
-    </div>
-  );
+    const handleImgLoad = (event) => {
+        setImgDimensions({ width: event.target.width, height: event.target.height });
+    };
+
+    const img = <img src={imgurl} alt="Out Image" style={{ width: '50%', height: '50%', marginRight: '16px' }} onLoad={handleImgLoad} />;
+
+    return (
+        <div>
+            <button style={{
+                height: '40px',
+                padding: '10px',
+                margin: '20px',
+                color: '#333', 
+                fontSize: '16px',
+            }} onClick={handleDetection}>Detect Wildfire and Smoke</button>
+            {results && results.length > 0 ? (
+                <div style={{ position: 'relative' }}>
+                    {img}
+                    <svg
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            pointerEvents: 'none'
+                        }}
+                    >
+                        {results.map((result, index) => (
+                            result.x &&
+                            <React.Fragment key={index}>
+                                <rect
+                                    x={result.x.toString() * 0.25 * (imgDimensions.width / result.width.toString())}
+                                    y={result.y.toString() * 0.25 * (imgDimensions.height / result.height.toString())}
+                                    width={result.width.toString() * 0.25 * (imgDimensions.width / result.width.toString())}
+                                    height={result.height.toString() * 0.25 * (imgDimensions.height / result.height.toString())}
+                                    style={{
+                                        stroke: 'red',
+                                        strokeWidth: 1,
+                                        fill: 'none'
+                                    }}
+                                />
+                                <text
+                                    x={result.x.toString() * 0.2 * (imgDimensions.width / result.width.toString())}
+                                    y={result.y.toString() * 0.2 * (imgDimensions.height / result.height.toString()) - 5}
+                                    style={{
+                                        fill: 'green',
+                                        stroke: 'red',
+                                        strokeWidth: 0.5,
+                                        fontSize: '20px'
+                                    }}
+                                >
+                                    {result.class}
+                                    {result.confidence && ` (${(result.confidence * 100).toFixed(2)}%)`}
+                                </text>
+                            </React.Fragment>
+                        ))}
+                    </svg>
+                </div>
+            ) : (
+                <div>No thing detected</div>
+            )}
+        </div >
+    );
 }
 
 export default RoboflowDetector;
