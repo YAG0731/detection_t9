@@ -1,11 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { loadModules } from 'esri-loader';
 
-function NdviMap() {
+function Geotest() {
   const mapRef = useRef(null);
-  const [selectedFunction, setSelectedFunction] = useState('NDVI Colorized');
-  const imageryLayerRef = useRef(null);
-  const legendRef = useRef(null);
   const viewRef = useRef(null);
   const geojsonLayerRef = useRef(null);
 
@@ -15,12 +12,9 @@ function NdviMap() {
       'esri/Map',
       'esri/views/MapView',
       'esri/layers/ImageryLayer',
-      'esri/layers/support/RasterFunction',
-      'esri/widgets/Legend',
-      'esri/widgets/Expand',
       'esri/layers/GeoJSONLayer'
     ], { css: true })
-      .then(([ArcGISMap, MapView, ImageryLayer, Layer, RasterFunction, Legend, Expand, GeoJSONLayer]) => {
+      .then(([ArcGISMap, MapView, ImageryLayer, GeoJSONLayer]) => {
         // destroy the previous view instance if it exists
         if (viewRef.current) {
           viewRef.current.destroy();
@@ -35,25 +29,20 @@ function NdviMap() {
         const view = new MapView({
           container: mapRef.current,
           map: map,
-          center: [120, 22], // Los Angeles coordinates
-          zoom: 7
+          center: [-118.2437, 34.0522], // Los Angeles coordinates
+          zoom: 10
         });
 
         // create a new imagery layer instance
         const imageryLayer = new ImageryLayer({
-          url: 'https://landsat.arcgis.com/arcgis/rest/services/Landsat8_Views/ImageServer',
-          renderingRule: {
-            rasterFunction: selectedFunction,
-            variableName: 'Raster'
-          },
-          opacity: 1
+          url: 'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer',
+          title: 'World Imagery'
         });
 
         // add the imagery layer to the map
         map.add(imageryLayer);
-        imageryLayerRef.current = imageryLayer;
-        viewRef.current = view;
 
+        // create a new geojson layer instance
         const geojsonLayer = new GeoJSONLayer({
           url: 'counties.json',
           renderer: {
@@ -73,44 +62,25 @@ function NdviMap() {
         map.add(geojsonLayer);
         geojsonLayerRef.current = geojsonLayer;
 
-
-
-        const legend = new Legend({
-          view: view
-        });
-
-        // add the legend to the map
-        view.ui.add(legend, 'bottom-right');
-        legendRef.current = legend;
+        viewRef.current = view;
 
         return () => {
           // cleanup logic here
           if (view) {
             view.destroy();
           }
-          if (legendRef.current) {
-            legendRef.current.destroy();
-          }
         };
       })
       .catch((error) => {
         console.error(error);
       });
-  }, [selectedFunction]);
+  }, []);
 
   useEffect(() => {
     // update the imagery layer with the new rendering rule when the selectedFunction changes
-    if (imageryLayerRef.current) {
-      imageryLayerRef.current.renderingRule = {
-        rasterFunction: selectedFunction,
-        variableName: 'Raster'
-      };
-    }
-  }, [selectedFunction]);
 
-  const handleSelectChange = (event) => {
-    setSelectedFunction(event.target.value);
-  };
+  }, []);
+
 
   return (
     <div style={{ alignItems: 'right' }}>
@@ -118,16 +88,7 @@ function NdviMap() {
         <h1>NDVI</h1>
       </header>
       <div style={{ display: 'flex', alignItems: 'center',marginBottom:'5px' }}>
-        <label htmlFor="function-select" style={{ display: 'flex', alignItems: 'center', marginRight:'5px' }}>
-          Select a Raster Function:  
-        </label>
-        <select id="function-select" value={selectedFunction} onChange={handleSelectChange} >
-          <option value="NDVI Raw"> NDVI Raw </option>
-          <option value="NDVI Colorized"> NDVI Colorized </option>
-          <option value="Normalized Difference Moisture Index Colorized"> Moisture </option>
-          <option value="NBR Raw"> NBR Raw </option>
 
-        </select>
       </div>
       <div
         ref={mapRef}
@@ -137,6 +98,4 @@ function NdviMap() {
   );
 }
 
-export default NdviMap;
-
-
+export default Geotest;

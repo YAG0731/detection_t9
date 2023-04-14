@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
 import FireDetection from './FireDetection';
 import FireProgression from './FireProgression';
+import Geotest from './Geotest';
 import './App.css';
 
 import FireRiskPrediction from './FireRiskPrediction';
@@ -22,12 +23,16 @@ function App() {
             <li>
               <Link className="link" to="/fire-progression">Fire Progression</Link>
             </li>
+            <li>
+              <Link className="link" to="/Geotest">geo test</Link>
+            </li>
           </ul>
         </nav>
         <Routes>
           <Route path="/" element={<FireDetection />} />
           <Route path="/fire-risk" element={<FireRiskPrediction />} />
           <Route path="/fire-progression" element={<FireProgression />} />
+          <Route path="/Geotest" element={< Geotest />} />
         </Routes>
       </BrowserRouter>
     </div>

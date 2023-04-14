@@ -29,7 +29,7 @@ function RoboflowDetector({ imgurl }) {
         setImgDimensions({ width: event.target.width, height: event.target.height });
     };
 
-    const img = <img src={imgurl} alt="Out Image" style={{ width: '50%', height: '50%', marginRight: '16px' }} onLoad={handleImgLoad} />;
+    const img = <img src={imgurl} alt="Out Image" style={{ width: '700px', height: '700px', marginRight: '16px' }} onLoad={handleImgLoad} />;
 
     return (
         <div>
@@ -37,7 +37,7 @@ function RoboflowDetector({ imgurl }) {
                 height: '40px',
                 padding: '10px',
                 margin: '20px',
-                color: '#333', 
+                color: '#333',
                 fontSize: '16px',
             }} onClick={handleDetection}>Detect Wildfire and Smoke</button>
             {results && results.length > 0 ? (
@@ -50,39 +50,66 @@ function RoboflowDetector({ imgurl }) {
                             left: 0,
                             width: '100%',
                             height: '100%',
-                            pointerEvents: 'none'
+                            pointerEvents: 'none',
                         }}
                     >
-                        {results.map((result, index) => (
-                            result.x &&
-                            <React.Fragment key={index}>
-                                <rect
-                                    x={result.x.toString() * 0.25 * (imgDimensions.width / result.width.toString())}
-                                    y={result.y.toString() * 0.25 * (imgDimensions.height / result.height.toString())}
-                                    width={result.width.toString() * 0.25 * (imgDimensions.width / result.width.toString())}
-                                    height={result.height.toString() * 0.25 * (imgDimensions.height / result.height.toString())}
-                                    style={{
-                                        stroke: 'red',
-                                        strokeWidth: 1,
-                                        fill: 'none'
-                                    }}
+                        {/* Add grid lines */}
+                        {Array.from({ length: 20 }).map((_, i) => (
+                            <React.Fragment key={i}>
+                                {/* Vertical line */}
+                                <line
+                                    x1={`${(i + 1) * 5}%`}
+                                    y1="0"
+                                    x2={`${(i + 1) * 5}%`}
+                                    y2="100%"
+                                    stroke="white"
+                                    strokeWidth="0.25"
                                 />
-                                <text
-                                    x={result.x.toString() * 0.2 * (imgDimensions.width / result.width.toString())}
-                                    y={result.y.toString() * 0.2 * (imgDimensions.height / result.height.toString()) - 5}
-                                    style={{
-                                        fill: 'green',
-                                        stroke: 'red',
-                                        strokeWidth: 0.5,
-                                        fontSize: '20px'
-                                    }}
-                                >
-                                    {result.class}
-                                    {result.confidence && ` (${(result.confidence * 100).toFixed(2)}%)`}
-                                </text>
+                                {/* Horizontal line */}
+                                <line
+                                    x1="0"
+                                    y1={`${(i + 1) * 5}%`}
+                                    x2="100%"
+                                    y2={`${(i + 1) * 5}%`}
+                                    stroke="white"
+                                    strokeWidth="0.25"
+                                />
                             </React.Fragment>
                         ))}
+
+                        {/* Add detection boxes */}
+                        {results.map((result, index) => (
+                            result.x && (
+                                <React.Fragment key={index}>
+                                    <rect
+                                        x={result.x.toString() * 0.05 * (imgDimensions.width / result.width.toString())}
+                                        y={result.y.toString() * 0.5 * (imgDimensions.height / result.height.toString())}
+                                        width={result.width.toString() * 0.25 * (imgDimensions.width / result.width.toString())}
+                                        height={result.height.toString() * 0.66 * (imgDimensions.height / result.height.toString())}
+                                        style={{
+                                            stroke: 'red',
+                                            strokeWidth: 1,
+                                            fill: 'none',
+                                        }}
+                                    />
+                                    <text
+                                        x={result.x.toString() * 0.05 * (imgDimensions.width / result.width.toString())}
+                                        y={result.y.toString() * 0.5 * (imgDimensions.height / result.height.toString()) - 5}
+                                        style={{
+                                            fill: 'green',
+                                            stroke: 'red',
+                                            strokeWidth: 0.5,
+                                            fontSize: '20px',
+                                        }}
+                                    >
+                                        {result.class}
+                                        {result.confidence && ` (${(result.confidence * 100).toFixed(2)}%)`}
+                                    </text>
+                                </React.Fragment>
+                            )
+                        ))}
                     </svg>
+
                 </div>
             ) : (
                 <div>No thing detected</div>
