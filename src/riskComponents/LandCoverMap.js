@@ -22,6 +22,17 @@ function LandCoverMap() {
       // create the map
       const map = new Map();
 
+      
+      const view = new MapView({
+        container: mapRef.current,
+        map: map,
+        center: [110, 20],
+        zoom: 10,
+        constraints: {
+          minZoom: 7
+        }
+      });
+
       // create the imagery layer
       const layer = new ImageryLayer({
         url:
@@ -33,15 +44,6 @@ function LandCoverMap() {
       // add the imagery layer to the map
       map.add(layer);
 
-      const view = new MapView({
-        container: mapRef.current,
-        map: map,
-        center: [120, 22],
-        zoom: 7,
-        constraints: {
-          minZoom: 7
-        }
-      });
 
       // add the legend to the view
       const legend = new Legend({

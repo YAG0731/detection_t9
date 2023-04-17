@@ -34,7 +34,7 @@ class FireDetection extends Component {
     if (this.state.imageColor === 'True Color Composite') {
       url += 'MODIS_Terra_CorrectedReflectance_TrueColor';
     } else {
-      url += 'MODIS_Terra_CorrectedReflectance_Bands721';
+      url += 'MODIS_Aqua_CorrectedReflectance_Bands721';
     }
     url += '&FORMAT=image/jpeg&HEIGHT=' + height + '&WIDTH=' + height + '&BBOX=';
 
@@ -42,7 +42,10 @@ class FireDetection extends Component {
       url += '37,-125,42,-120&TIME=';
     }
     if (this.state.area === 'Kaohsiung') {
-      url += '22,120,23,121&TIME=';
+      url += '22.623,120,23.27,120.799&TIME=';
+    }
+    if(this.state.area === 'Sonoma'){
+      url += '37.757263,-123.049622,38.515320,-122.225647&TIME=';
     }
     else {
       url += '32,-122,39,-114&TIME=';
@@ -123,13 +126,14 @@ class FireDetection extends Component {
       <div>
         <div>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', zIndex: '-100' }}>
-          <h1 style={{ marginBottom: '50px' }}>Wildfire and Smoke Detection</h1>
+          <h1 style={{ marginBottom: '10px' }}>Wildfire and Smoke Detection</h1>
             <div style={{ margin: '10px 0 0 10px', width: '100vw' }}>
 
               <select class="my-select" onChange={(e) => { this.setState({ area: e.target.value }); setTimeout(() => { this.getFile() }, 10) }}>
                 <option value='North California'>North California</option>
                 <option value='South California'>South California</option>
                 <option value='Kaohsiung'>Kaohsiung</option>
+                <option value={'Sonoma'}>Sonoma</option>
               </select>
               <select class="my-select" onChange={(e) => { this.setState({ imageColor: e.target.value }); setTimeout(() => { this.getFile() }, 10) }}>
                 <option value='True Color Composite'>True Color Composite</option>

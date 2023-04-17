@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { loadModules } from 'esri-loader';
 
-function NdviMap() {
+function NdviMap({ city }) {
   const mapRef = useRef(null);
   const [selectedFunction, setSelectedFunction] = useState('NDVI Colorized');
   const imageryLayerRef = useRef(null);
   const legendRef = useRef(null);
   const viewRef = useRef(null);
-  const geojsonLayerRef = useRef(null);
 
   useEffect(() => {
     // load the required ArcGIS API modules
@@ -35,7 +34,7 @@ function NdviMap() {
         const view = new MapView({
           container: mapRef.current,
           map: map,
-          center: [120, 22], // Los Angeles coordinates
+          center: [city.lng, city.lat], // Los Angeles coordinates
           zoom: 7
         });
 
@@ -53,27 +52,6 @@ function NdviMap() {
         map.add(imageryLayer);
         imageryLayerRef.current = imageryLayer;
         viewRef.current = view;
-
-        const geojsonLayer = new GeoJSONLayer({
-          url: 'counties.json',
-          renderer: {
-            type: 'simple',
-            symbol: {
-              type: 'simple-fill',
-              color: [51, 51, 204, 0.9],
-              outline: {
-                color: [255, 255, 255],
-                width: 1
-              }
-            }
-          }
-        });
-
-        // add the GeoJSON layer to the map
-        map.add(geojsonLayer);
-        geojsonLayerRef.current = geojsonLayer;
-
-
 
         const legend = new Legend({
           view: view
@@ -96,7 +74,7 @@ function NdviMap() {
       .catch((error) => {
         console.error(error);
       });
-  }, [selectedFunction]);
+  }, [selectedFunction, city]);
 
   useEffect(() => {
     // update the imagery layer with the new rendering rule when the selectedFunction changes
@@ -112,23 +90,31 @@ function NdviMap() {
     setSelectedFunction(event.target.value);
   };
 
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+    viewRef.current.center = [city.lng, city.lat];
+    viewRef.current.zoom = 6;
+    viewRef.current.goTo({ center: [city.lng, city.lat], zoom: 6 }, { duration: 2000 });
+  };
   return (
     <div style={{ alignItems: 'right' }}>
       <header>
         <h1>NDVI</h1>
       </header>
-      <div style={{ display: 'flex', alignItems: 'center',marginBottom:'5px' }}>
-        <label htmlFor="function-select" style={{ display: 'flex', alignItems: 'center', marginRight:'5px' }}>
-          Select a Raster Function:  
-        </label>
-        <select id="function-select" value={selectedFunction} onChange={handleSelectChange} >
-          <option value="NDVI Raw"> NDVI Raw </option>
-          <option value="NDVI Colorized"> NDVI Colorized </option>
-          <option value="Normalized Difference Moisture Index Colorized"> Moisture </option>
-          <option value="NBR Raw"> NBR Raw </option>
+      <form onSubmit={handleFormSubmit}>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
+          <label htmlFor="function-select" style={{ display: 'flex', alignItems: 'center', marginRight: '5px', fontSize:'20px' }}>
+            Select a Raster Function:
+          </label>
+          <select id="function-select" value={selectedFunction} onChange={handleSelectChange} >
+            <option value="NDVI Raw"> NDVI Raw </option>
+            <option value="NDVI Colorized"> NDVI Colorized </option>
+            <option value="Normalized Difference Moisture Index Colorized"> Moisture </option>
+            <option value="NBR Raw"> NBR Raw </option>
 
-        </select>
-      </div>
+          </select>
+        </div>
+      </form>
       <div
         ref={mapRef}
         style={{ height: '500px', width: '500px', border: '2px solid black', maxWidth: '500px' }}

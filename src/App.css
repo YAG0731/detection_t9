@@ -15,13 +15,14 @@
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  height: 80px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  font-family: monospace;
 }
 
 .App-link {
@@ -51,12 +52,12 @@
 
 
 .my-select {
-  width: 250px; /* set the width of the select element */
+  width: 200px; /* set the width of the select element */
   height: 50px; /* set the height of the select element */
   padding: 5px; /* add padding to the select element */
-  border: 5px solid #ccc; /* add a border to the select element */
+  border: 2px solid #ccc; /* add a border to the select element */
   border-radius: 5px; /* add border-radius to the select element */
-  font-size: 16px; /* set the font size of the select element */
+  font-size: 15px; /* set the font size of the select element */
   margin: 10px; /* add margin to the select element */
 }
 
@@ -79,10 +80,18 @@ button:hover {
 }
 
 .link {
-  color: #2a55b3;
-  text-decoration: none;
-  margin: 10px ;
+  color: hsl(162, 19%, 87%);
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  margin: 70px ;
+  margin-top: 5px;
   padding: 10px;
+  background-color: rgb(175, 58, 58);
+  border-radius: 18%;
+  offset: 5px;
+  align-items: center;
+  border: 2px solid rgb(32, 6, 6);
+  text-decoration: none;
+  font-size: 20px;
 }
 
 .link:hover {
@@ -94,7 +103,10 @@ button:hover {
   display: flex;
   justify-content: center;
   padding: 10px;
-  margin: 15px;
+  border-bottom: 2px solid #160b0b;
+  height: 40px;
+  margin-bottom: 5px;
+
 }
 
 ul {
