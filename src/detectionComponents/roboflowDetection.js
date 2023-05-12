@@ -4,37 +4,41 @@ import axios from 'axios';
 function RoboflowDetector({ imgurl }) {
     const [results, setResults] = useState(null);
     const [imgDimensions, setImgDimensions] = useState({ width: 0, height: 0 });
-    const [selectedUrl, setSelectedUrl] = useState(1); // Default to the first URL
+    const [selectedUrls, setSelectedUrls] = useState([0, 1]); // Default to smoke and fire detection
 
-    const urls = [
-        {
-            name: 'Smoke Detection',
-            url: 'https://detect.roboflow.com/wildfire_smoke_detection-498gm/5',
-            apiKey: 'vIkUHcco5ivmpVzbIkvX',
-        },
-        {
-            //https://detect.roboflow.com/?model=modis_images&version=2&api_key=9ajQQoG7JQba1FLrZX6L
-            name: 'Wildfire Detection',
-            url: 'https://detect.roboflow.com/modis_images/2',
-            apiKey: '9ajQQoG7JQba1FLrZX6L',
-        },];
+    const urls = [     
+        {           
+            name: 'Smoke Detection',            
+            url: 'https://detect.roboflow.com/wildfire_smoke_detection-498gm/5',            
+            apiKey: 'vIkUHcco5ivmpVzbIkvX',        
+        },        
+        {            
+            name: 'Fire Detection',            
+            url: 'https://detect.roboflow.com/wildfire_detection_v2/1',            
+            apiKey: '9ajQQoG7JQba1FLrZX6L',        
+        },    
+    ];
 
     const handleDetection = () => {
-        const apiUrl = urls[selectedUrl].url;
-        const apiKey = urls[selectedUrl].apiKey;
+        const apiUrls = selectedUrls.map(index => urls[index].url);
+        const apiKeys = selectedUrls.map(index => urls[index].apiKey);
 
-        axios({
-            method: 'POST',
-            url: apiUrl,
-            params: {
-                api_key: apiKey,
-                image: imgurl,
-            },
-        })
-            .then(function (response) {
-                const detections = response.data['predictions'];
-                console.log(detections);
-                setResults(detections);
+        const requests = apiUrls.map((apiUrl, index) => {
+            return axios({
+                method: 'POST',
+                url: apiUrl,
+                params: {
+                    api_key: apiKeys[index],
+                    image: imgurl,
+                },
+            });
+        });
+
+        Promise.all(requests)
+            .then(function (responses) {
+                const allDetections = responses.map(response => response.data['predictions']);
+                const combinedDetections = allDetections.flat(); // Combine the detections from both requests
+                setResults(combinedDetections);
             })
             .catch(function (error) {
                 console.log(error.message);
@@ -64,11 +68,17 @@ function RoboflowDetector({ imgurl }) {
                             height: '40px',
                             padding: '10px',
                             margin: '20px',
-                            color: selectedUrl === index ? 'white' : '#333',
+                            color: selectedUrls.includes(index) ? 'white' : '#333',
                             fontSize: '16px',
-                            backgroundColor: selectedUrl === index ? 'blue' : 'white',
+                            backgroundColor: selectedUrls.includes(index) ? 'blue' : 'white',
                         }}
-                        onClick={() => setSelectedUrl(index)}
+                        onClick={() => {
+                            if (selectedUrls.includes(index)) {
+                                setSelectedUrls(selectedUrls.filter(idx => idx !== index));
+                            } else {
+                                setSelectedUrls([...selectedUrls, index]);
+                            }
+                        }}
                     >
                         {url.name}
                     </button>
