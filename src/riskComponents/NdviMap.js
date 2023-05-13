@@ -34,8 +34,8 @@ function NdviMap({ city }) {
         const view = new MapView({
           container: mapRef.current,
           map: map,
-          center: [city.lng, city.lat], // Los Angeles coordinates
-          zoom: 7
+          center: [city.lng, city.lat], 
+          zoom: 10
         });
 
         // create a new imagery layer instance

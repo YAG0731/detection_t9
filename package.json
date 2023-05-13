@@ -16,6 +16,8 @@
     "cors": "^2.8.5",
     "esri-loader": "^3.7.0",
     "fs": "^0.0.1-security",
+    "geotiff": "^2.0.7",
+    "gifshot": "^0.4.5",
     "jimp": "^0.22.7",
     "leaflet": "^1.9.3",
     "react": "^18.2.0",
