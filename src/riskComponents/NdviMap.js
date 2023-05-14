@@ -11,35 +11,49 @@ function NdviMap({ city }) {
   useEffect(() => {
     // load the required ArcGIS API modules
     loadModules([
-      'esri/Map',
-      'esri/views/MapView',
-      'esri/layers/ImageryLayer',
-      'esri/layers/support/RasterFunction',
-      'esri/widgets/Legend',
-      'esri/widgets/Expand',
-      'esri/layers/GeoJSONLayer'
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/layers/ImageryLayer",
+      "esri/widgets/Legend",
+      "esri/widgets/Expand",
+      "esri/layers/FeatureLayer",
+      "esri/layers/support/LabelClass",
+      "esri/renderers/SimpleRenderer",
+      "esri/symbols/SimpleFillSymbol",
+      "esri/symbols/TextSymbol",
     ], { css: true })
-      .then(([ArcGISMap, MapView, ImageryLayer, Layer, RasterFunction, Legend, Expand, GeoJSONLayer]) => {
+      .then(([ ArcGISMap,
+        MapView,
+        ImageryLayer,
+        Legend,
+        Expand,
+        FeatureLayer,
+        LabelClass,
+        SimpleRenderer,
+        SimpleFillSymbol,
+        TextSymbol,]) => {
         // destroy the previous view instance if it exists
         if (viewRef.current) {
           viewRef.current.destroy();
         }
 
-        // create a new map instance
-        const map = new ArcGISMap({
-          basemap: 'satellite'
+        const countiesLayer = new FeatureLayer({
+          url:
+            "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/USA_Census_Counties/FeatureServer/0",
         });
 
-        // create a new map view instance
-        const view = new MapView({
-          container: mapRef.current,
-          map: map,
-          center: [city.lng, city.lat], 
-          zoom: 10
+        const renderer = new SimpleRenderer({
+          symbol: new SimpleFillSymbol({
+            color: [255, 0, 0, 0.1],
+            outline: {
+              color: "blue",
+              width: "2px",
+            },
+          }),
         });
 
-        // create a new imagery layer instance
-        const imageryLayer = new ImageryLayer({
+        countiesLayer.renderer = renderer;
+         const imageryLayer = new ImageryLayer({
           url: 'https://landsat.arcgis.com/arcgis/rest/services/Landsat8_Views/ImageServer',
           renderingRule: {
             rasterFunction: selectedFunction,
@@ -48,18 +62,24 @@ function NdviMap({ city }) {
           opacity: 1
         });
 
-        // add the imagery layer to the map
-        map.add(imageryLayer);
-        imageryLayerRef.current = imageryLayer;
-        viewRef.current = view;
-
-        const legend = new Legend({
-          view: view
+        const map = new ArcGISMap({
+          basemap: "satellite",
+          layers: [imageryLayer, countiesLayer],
+        });
+        
+                                
+        // create a new map view instance
+        const view = new MapView({
+          container: mapRef.current,
+          map: map,
+          center: [city.lng, city.lat], 
+          zoom: 8
         });
 
-        // add the legend to the map
-        view.ui.add(legend, 'bottom-right');
-        legendRef.current = legend;
+        // create a new imagery layer instance
+    
+        viewRef.current = view;
+        imageryLayerRef.current = imageryLayer;
 
         return () => {
           // cleanup logic here
