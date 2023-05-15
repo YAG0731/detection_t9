@@ -4,98 +4,43 @@ import axios from 'axios';
 function RoboflowDetector({ imgurl }) {
     const [results, setResults] = useState(null);
     const [imgDimensions, setImgDimensions] = useState({ width: 0, height: 0 });
-    const [selectedUrls, setSelectedUrls] = useState([0, 1]); // Default to smoke and fire detection
-
-    const urls = [     
-        {           
-            name: 'Smoke Detection',            
-            url: 'https://detect.roboflow.com/wildfire_smoke_detection-498gm/5',            
-            apiKey: 'vIkUHcco5ivmpVzbIkvX',        
-        },        
-        {            
-            name: 'Fire Detection',            
-            url: 'https://detect.roboflow.com/wildfire_detection_v2/1',            
-            apiKey: '9ajQQoG7JQba1FLrZX6L',        
-        },    
-    ];
 
     const handleDetection = () => {
-        const apiUrls = selectedUrls.map(index => urls[index].url);
-        const apiKeys = selectedUrls.map(index => urls[index].apiKey);
-
-        const requests = apiUrls.map((apiUrl, index) => {
-            return axios({
-                method: 'POST',
-                url: apiUrl,
-                params: {
-                    api_key: apiKeys[index],
-                    image: imgurl,
-                },
-            });
-        });
-
-        Promise.all(requests)
-            .then(function (responses) {
-                const allDetections = responses.map(response => response.data['predictions']);
-                const combinedDetections = allDetections.flat(); // Combine the detections from both requests
-                setResults(combinedDetections);
+        axios({
+            method: "POST",
+            url: "https://detect.roboflow.com/wildfire_smoke_detection-498gm/5",
+            params: {
+                api_key: "vIkUHcco5ivmpVzbIkvX",
+                image: imgurl // Use the imgurl prop here
+            }
+        })
+            .then(function (response) {
+                const detections = response.data['predictions'];
+                console.log(detections)
+                setResults(detections);
+                detections.forEach(detection => console.log(detection.x))
             })
             .catch(function (error) {
                 console.log(error.message);
             });
-    };
+    }
 
     const handleImgLoad = (event) => {
         setImgDimensions({ width: event.target.width, height: event.target.height });
     };
 
-    const img = (
-        <img
-            src={imgurl}
-            alt="Out Image"
-            style={{ width: '700px', height: '700px', marginRight: '16px' }}
-            onLoad={handleImgLoad}
-        />
-    );
+    const img = <img src={imgurl} alt="Out Image" style={{ width: '700px', height: '700px', marginRight: '16px' }} onLoad={handleImgLoad} />;
 
     return (
         <div>
-            <div>
-                {urls.map((url, index) => (
-                    <button
-                        key={index}
-                        style={{
-                            height: '40px',
-                            padding: '10px',
-                            margin: '20px',
-                            color: selectedUrls.includes(index) ? 'white' : '#333',
-                            fontSize: '16px',
-                            backgroundColor: selectedUrls.includes(index) ? 'blue' : 'white',
-                        }}
-                        onClick={() => {
-                            if (selectedUrls.includes(index)) {
-                                setSelectedUrls(selectedUrls.filter(idx => idx !== index));
-                            } else {
-                                setSelectedUrls([...selectedUrls, index]);
-                            }
-                        }}
-                    >
-                        {url.name}
-                    </button>
-                ))}
-            </div>
-            <button
-                style={{
-                    height: '40px',
-                    padding: '10px',
-                    margin: '20px',
-                    color: '#333',
-                    fontSize: '16px',
-                }}
-                onClick={handleDetection}
-            >
-                Detect
-            </button>
+            <button style={{
+                height: '40px',
+                padding: '10px',
+                margin: '20px',
+                borderRadius: '5px',
+                color: '#333',
+                fontSize: '16px',
+            }} onClick={handleDetection}>Detect Wildfire and Smoke</button>
             {results && results.length > 0 ? (
                 <div style={{ position: 'relative' }}>
                     {img}
@@ -138,10 +83,10 @@ function RoboflowDetector({ imgurl }) {
                             result.x && (
                                 <React.Fragment key={index}>
                                     <rect
-                                        x={result.x.toString() * 0.05 * (imgDimensions.width / result.width.toString())}
-                                        y={result.y.toString() * 0.1 * (imgDimensions.height / result.height.toString())}
-                                        width={result.width.toString() *0.9 * (imgDimensions.width / result.width.toString())}
-                                        height={result.height.toString() * 0.5 * (imgDimensions.height / result.height.toString())}
+                                        x={result.x.toString() * 0.02 * (imgDimensions.width / result.width.toString())}
+                                        y={result.y.toString() * 0.01 * (imgDimensions.height / result.height.toString())}
+                                        width={result.width.toString() * 0.98 * (imgDimensions.width / result.width.toString())}
+                                        height={result.height.toString() * 0.66 * (imgDimensions.height / result.height.toString())}
                                         style={{
                                             stroke: 'red',
                                             strokeWidth: 1,
@@ -149,13 +94,13 @@ function RoboflowDetector({ imgurl }) {
                                         }}
                                     />
                                     <text
-                                        x={result.x.toString() * 0.05 * (imgDimensions.width / result.width.toString())}
-                                        y={result.y.toString() * 0.1 * (imgDimensions.height / result.height.toString()) - 5}
+                                        x={result.x.toString() * 0.02 * (imgDimensions.width / result.width.toString())}
+                                        y={result.y.toString() * 0.01 * (imgDimensions.height / result.height.toString()) +15}
                                         style={{
-                                            fill: 'black',
+                                            fill: 'green',
                                             stroke: 'red',
-                                            strokeWidth: 1,
-                                            fontSize: '30px',
+                                            strokeWidth: 0.5,
+                                            fontSize: '20px',
                                         }}
                                     >
                                         {result.class}
@@ -168,7 +113,7 @@ function RoboflowDetector({ imgurl }) {
 
                 </div>
             ) : (
-                <div>No thing detected</div>
+                <div style={{ margin:'10px' }}>***No thing detected***</div>
             )}
         </div >
     );

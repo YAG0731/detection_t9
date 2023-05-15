@@ -27,7 +27,7 @@ function FireProgression() {
         setGifUrl(obj.image);
         setTimeout(() => {
           setIsLoading(false);
-        }, 1000); // Show loading text for 1 second
+        }, 2000); // Show loading text for 1 second
       }
     });
   }, []);
