@@ -113,7 +113,7 @@ function RoboflowDetector({ imgurl }) {
 
                 </div>
             ) : (
-                <div style={{ margin:'10px' }}>***No thing detected***</div>
+                <div style={{ margin:'10px' }}>***Nothing detected***</div>
             )}
         </div >
     );
